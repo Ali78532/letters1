@@ -76,40 +76,18 @@
             font-size: 18px;
             color: #ccc;
         }
-.question-container {
-    margin-bottom: 25px;
-    padding: 25px;
-    border-radius: 15px;
-    background-color: #1e1e1e;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-}
-
-.pronounce-btn {
-    margin-top: 15px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background-color: #90caf9;
-    color: #121212;
-    font-size: 16px;
-    cursor: pointer;
-    align-self: flex-end; /* يجعل الزر في الجهة اليمنى */
-    transition: background-color 0.3s, transform 0.3s;
-}
-.pronounce-btn:hover {
-    background-color: #64b5f6;
-    transform: scale(1.05);
-}
-.pronounce-btn:active {
-    background-color: #42a5f5;
-}
+        .hint {
+            color: yellow;
+            font-size: 16px;
+            margin-top: 10px;
+            display: none;
+            text-align: right;
+            direction: rtl;
+        }
     </style>
 </head>
 <body>
     <h1>الحروف ج1</h1>
-
     <div id="quiz-container">
         <div class="quiz">
             <div class="question-container">
@@ -117,35 +95,30 @@
                 <div class="option" data-correct="true">بيگ</div>
                 <div class="option" data-correct="false">دگ</div>
                 <div class="option" data-correct="false">باگ</div>
-                <button class="pronounce-btn" style="display:none;">اسمع اللفظ الصحيح</button>
             </div>
             <div class="question-container">
                 <p class="question">did</p>
                 <div class="option" data-correct="false">داد</div>
                 <div class="option" data-correct="true">دِد</div>
                 <div class="option" data-correct="false">دايد</div>
-                <button class="pronounce-btn" style="display:none;">اسمع اللفظ الصحيح</button>
             </div>
             <div class="question-container">
                 <p class="question">lab</p>
                 <div class="option" data-correct="false">لاد</div>
                 <div class="option" data-correct="false">ليب</div>
                 <div class="option" data-correct="true">لاب</div>
-                <button class="pronounce-btn" style="display:none;">اسمع اللفظ الصحيح</button>
             </div>
             <div class="question-container">
                 <p class="question">hag</p>
                 <div class="option" data-correct="false">چاگ</div>
                 <div class="option" data-correct="true">هاگ</div>
                 <div class="option" data-correct="false">ناگ</div>
-                <button class="pronounce-btn" style="display:none;">اسمع اللفظ الصحيح</button>
             </div>
             <div class="question-container">
                 <p class="question">fed</p>
                 <div class="option" data-correct="false">تيد</div>
                 <div class="option" data-correct="false">فوب</div>
                 <div class="option" data-correct="true">فيد</div>
-                <button class="pronounce-btn" style="display:none;">اسمع اللفظ الصحيح</button>
             </div>
         </div>
 
@@ -168,7 +141,7 @@
             option.addEventListener('click', () => {
                 const question = option.parentElement;
                 const alreadyAnswered = question.querySelector('.option.correct') || question.querySelector('.option.wrong');
-                const pronounceBtn = question.querySelector('.pronounce-btn');
+                const hint = question.querySelector('.hint');
 
                 if (alreadyAnswered) {
                     return;
@@ -182,6 +155,10 @@
                 } else {
                     option.classList.add('wrong');
                     wrongSound.play();
+                    if (hint) hint.style.display = 'block';
+                    if (navigator.vibrate) {
+                        navigator.vibrate(80);
+                    }
                 }
 
                 const siblings = question.querySelectorAll('.option');
@@ -199,16 +176,6 @@
                 }
 
                 resultSpan.textContent = score;
-
-                pronounceBtn.style.display = 'inline-block';
-
-                pronounceBtn.onclick = () => {
-                    const textToPronounce = question.querySelector('.question').textContent.trim();
-                    const synth = window.speechSynthesis;
-                    const utterance = new SpeechSynthesisUtterance(textToPronounce);
-                    utterance.lang = 'en-US';
-                    synth.speak(utterance);
-                };
             });
         });
     </script>
